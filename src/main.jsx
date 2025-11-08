@@ -6,6 +6,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import Root from './Layouts/Root.jsx';
 import Home from './Pages/Home.jsx';
 import Login from './Pages/Login.jsx';
+import Register from './Pages/Register.jsx';
+import { ToastContainer } from 'react-toastify';
+import AuthProvider from './Provider/AuthProvider.jsx';
+import ForgotPassword from './Pages/ForgotPassword.jsx';
 
 
 
@@ -24,6 +28,14 @@ const router = createBrowserRouter([
       {
         path:'/login',
         Component:Login
+      },
+      {
+        path: "/register",
+        Component: Register,
+      },
+      {
+        path:'/forgot-password',
+        Component:ForgotPassword
       }
     ]
   },
@@ -31,6 +43,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </AuthProvider>
   </StrictMode>,
 )

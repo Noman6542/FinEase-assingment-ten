@@ -1,12 +1,23 @@
-import React from "react";
+import React, { use, useState } from "react";
 import { FaChartBar, FaPlus } from "react-icons/fa";
 import { HiOutlineQueueList } from "react-icons/hi2";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlineTrendingUp } from "react-icons/md";
 import { Link, NavLink, useNavigate } from "react-router";
+import { auth } from "../Firebase/Firebase.init";
+import Swal from "sweetalert2";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { user } = use(AuthContext);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+
+  const handleLogout = () => {
+    auth.signOut();
+    Swal.fire("Logged out", "See you soon!", "success");
+  };
 
   return (
     <div className="navbar bg-indigo-600 shadow-md sticky">
@@ -125,14 +136,47 @@ const Navbar = () => {
           </NavLink>
         </ul>
       </div>
-      <div className="navbar-end">
-        <Link
-          to="/login"
-          className="btn btn-primary hidden md:flex items-center justify-center hover:bg-white hover:font-semibold hover:text-black "
-        >
-          Login
-        </Link>
-      </div>
+      <div className="navbar-end relative">
+      {!user ? (
+        <>
+          <Link
+            to="/login"
+            className="btn btn-primary hidden md:flex items-center justify-center hover:bg-white hover:font-semibold hover:text-black"
+          >
+            Login
+          </Link>
+          <Link
+            to="/signup"
+            className="btn btn-secondary hidden md:flex ml-2 items-center justify-center hover:bg-white hover:font-semibold hover:text-black"
+          >
+            Signup
+          </Link>
+        </>
+      ) : (
+        <div className="relative">
+          <img
+            src={user.photoURL || "/default.png"}
+            alt="user"
+            className="w-10 h-10 rounded-full cursor-pointer"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          />
+
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-3 z-50">
+              <p className="font-semibold">{user.displayName}</p>
+              <p className="text-sm text-gray-600">{user.email}</p>
+              <div className="mt-2 mb-2"><hr /></div>
+              <button
+                onClick={handleLogout}
+                className="mt-2 w-full bg-red-500 hover:bg-red-600 text-white py-1 rounded"
+              >
+                Log out
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
     </div>
   );
 };
