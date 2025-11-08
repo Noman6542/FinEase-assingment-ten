@@ -1,9 +1,17 @@
-import React from 'react';
+
+import Banner from "./Banner";
+import FinancialOverview from "./FinancialOverview";
+import StaticSections from "./StaticSections";
 
 const Home = () => {
+  
+  
   return (
     <div>
-      hi
+      <Banner></Banner>
+      <FinancialOverview></FinancialOverview>
+      <StaticSections></StaticSections>
+      
     </div>
   );
 };
