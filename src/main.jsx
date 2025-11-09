@@ -11,6 +11,8 @@ import { ToastContainer } from 'react-toastify';
 import AuthProvider from './Provider/AuthProvider.jsx';
 import ForgotPassword from './Pages/ForgotPassword.jsx';
 import MyProfile from './Pages/MyProfile.jsx';
+import PrivateRoute from './Private/PrivateRout.jsx';
+import AddTransactionPage from './Component/AddTranjection.jsx';
 
 
 
@@ -41,6 +43,14 @@ const router = createBrowserRouter([
       {
         path:'/my-profile',
         Component:MyProfile
+      },
+      {
+        path:'/add-transaction',
+        element: (
+          <PrivateRoute>
+            <AddTransactionPage></AddTransactionPage>
+          </PrivateRoute>
+        ),
       }
     ]
   },
