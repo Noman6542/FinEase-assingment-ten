@@ -75,7 +75,7 @@ const Navbar = () => {
               <span className="text-sm sm:text-base">My Transactions</span>
             </NavLink>
             <NavLink
-              to={"/reports"}
+              to={"/report"}
               className={
                 "flex items-center space-x-2 text-white text-2xl font-bold tracking-tight"
               }
@@ -127,7 +127,7 @@ const Navbar = () => {
             <span>My Transactions</span>
           </NavLink>
           <NavLink
-            to={"/reports"}
+            to={"/report"}
             className={
               "flex items-center space-x-2 text-white text-2xl font-bold tracking-tight"
             }
