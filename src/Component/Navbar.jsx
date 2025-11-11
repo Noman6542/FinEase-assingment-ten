@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FaChartBar, FaPlus } from "react-icons/fa";
 import { HiOutlineQueueList } from "react-icons/hi2";
 import { IoHomeOutline } from "react-icons/io5";
@@ -13,7 +13,17 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user } = use(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
+  useEffect(() => {
+    const html = document.querySelector("html");
+    html.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+  
+  const handleTheme = (checked) => {
+    setTheme(checked ? "dark": "light")
+  }
 
   const handleLogout = () => {
     auth.signOut();
@@ -138,51 +148,65 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end relative">
-      {!user ? (
-        <>
-          <Link
-            to="/login"
-            className="btn btn-primary hidden md:flex items-center justify-center hover:bg-white hover:font-semibold hover:text-black"
-          >
-            Login
-          </Link>
-          <Link
-            to="/signup"
-            className="btn btn-secondary hidden md:flex ml-2 items-center justify-center hover:bg-white hover:font-semibold hover:text-black"
-          >
-            Signup
-          </Link>
-        </>
-      ) : (
-        <div className="relative">
-          <img
-            src={user.photoURL || "/default.png"}
-            alt="user"
-            className="w-10 h-10 rounded-full cursor-pointer"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          />
+        {!user ? (
+          <>
+            <Link
+              to="/login"
+              className="btn btn-primary hidden md:flex items-center justify-center hover:bg-white hover:font-semibold hover:text-black"
+            >
+              Login
+            </Link>
+            <Link
+              to="/signup"
+              className="btn btn-secondary hidden md:flex ml-2 items-center justify-center hover:bg-white hover:font-semibold hover:text-black"
+            >
+              Signup
+            </Link>
+          </>
+        ) : (
+          <div className="relative">
+            <img
+              src={user.photoURL || "/default.png"}
+              alt="user"
+              className="w-10 h-10 rounded-full cursor-pointer"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+            />
 
-          {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-3"  style={{ zIndex: 999 }}>
-              <p className="font-semibold">{user.displayName}</p>
-              <p className="text-sm text-gray-600">{user.email}</p>
-              <div className="mt-2 mb-2"><hr /></div>
-              <Link to={'/my-profile'} onClick={() => setDropdownOpen(false)} className="mt-2 w-full bg-red-500 hover:bg-red-600 text-white py-1 rounded flex justify-center items-center space-x-2 ">
-              <CgProfile  className="w-7 h-7"/>
-              <span>My-Profile</span>
-              
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="mt-2 w-full bg-red-500 hover:bg-red-600 text-white py-1 rounded"
+            {dropdownOpen && (
+              <div
+                className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg p-3"
+                style={{ zIndex: 999 }}
               >
-                Log out
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+                <p className="font-semibold">{user.displayName}</p>
+                <p className="text-sm text-gray-600">{user.email}</p>
+                <div className="mt-2 mb-2">
+                  <hr />
+                </div>
+                <Link
+                  to={"/my-profile"}
+                  onClick={() => setDropdownOpen(false)}
+                  className="mt-2 w-full bg-red-500 hover:bg-red-600 text-white py-1 rounded flex justify-center items-center space-x-2 "
+                >
+                  <CgProfile className="w-7 h-7" />
+                  <span>My-Profile</span>
+                </Link>
+                <input
+                  onChange={(e) => handleTheme(e.target.checked)}
+                  type="checkbox"
+                  defaultChecked={localStorage.getItem("theme") === "dark"}
+                  className="toggle"
+                />
+                <button
+                  onClick={handleLogout}
+                  className="mt-2 w-full bg-red-500 hover:bg-red-600 text-white py-1 rounded"
+                >
+                  Log out
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

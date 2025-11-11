@@ -17,6 +17,7 @@ import MyTransactions from './Component/MyTransactions.jsx';
 import Details from './Pages/Details.jsx';
 import UpdateTransaction from './Pages/UpdateTransaction.jsx';
 import MyReport from './Component/MyReport.jsx';
+import Page404 from './Error/Page404.jsx';
 
 
 
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     Component:Root,
+    errorElement:<Page404></Page404>,
     children:[
       {
         index:true,
@@ -88,7 +90,8 @@ const router = createBrowserRouter([
             <MyReport></MyReport>
           </PrivateRoute>
         )
-      }
+      },
+      
 
 
 

@@ -1,32 +1,47 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { PacmanLoader } from "react-spinners";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const TransactionDetails = () => {
   const { id } = useParams(); 
   const navigate = useNavigate();
+  const {user}=use(AuthContext);
   const [transaction, setTransaction] = useState(null);
   const [totalCategoryAmount, setTotalCategoryAmount] = useState(0);
 
+
   useEffect(() => {
     if (!id) return;
-    fetch(`http://localhost:3000/transactions/${id}`)
+    fetch(`http://localhost:3000/transactions/${id}`,{
+      headers:{
+        authorization:`Bearer ${user.accessToken}`
+      }
+      })
       .then((res) => res.json())
       .then((data) => setTransaction(data))
       .catch((err) => console.error("Error fetching transaction:", err));
-  }, [id]);
+  }, [id,user]);
 
   useEffect(() => {
-    if (transaction?.category) {
-      fetch(`http://localhost:3000/transactions?category=${transaction.category}`)
-        .then((res) => res.json())
-        .then((data) => {
-          const total = data.reduce((sum, t) => sum + t.amount, 0);
-          setTotalCategoryAmount(total);
+    if (transaction?.category && user?.accessToken) {
+    fetch(`http://localhost:3000/transactions?category=${transaction.category}`, {
+      headers: {
+        authorization: `Bearer ${user.accessToken}` 
+      }
+    }) .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        const total = Array.isArray(data)
+          ? data.reduce((sum, t) => sum + t.amount, 0)
+          : 0;
+        setTotalCategoryAmount(total);
         })
         .catch((err) => console.error("Error fetching category total:", err));
     }
-  }, [transaction]);
+  }, [transaction,user]);
 
   if (!transaction)
     return (

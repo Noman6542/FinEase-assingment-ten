@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const UpdateTransaction = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const {user}=use(AuthContext);
   const [formData, setFormData] = useState({
     type: "",
     description: "",
@@ -33,12 +35,15 @@ const UpdateTransaction = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  
 
   const handleUpdate = (e) => {
     e.preventDefault();
     fetch(`http://localhost:3000/transactions/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" ,
+       authorization:`Bearer ${user.accessToken}`
+      },
       body: JSON.stringify({
         ...formData,
         amount: parseFloat(formData.amount),
